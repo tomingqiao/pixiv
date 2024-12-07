@@ -15,6 +15,7 @@ if (pid != false) {
     var uri = pid;
     $.ajax({
         url: "https://pximg.hakurei.cc/ajax/illust/" + uri,
+        async: false,
         type: "GET",
         dataType: "json",
         success: 
