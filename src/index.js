@@ -13,5 +13,14 @@ var pid = getQueryVariable("pid");
 console.log(pid);
 if (pid != false) {
     var uri = pid;
-    window.location.replace(uri);
+    $.ajax({
+        url: "https://pximg.hakurei.cc/ajax/illust/" + uri,
+        type: "GET",
+        dataType: "json",
+        success: 
+            function (data) {
+                var url = data.urls.original;
+                window.location.replace(url);
+        }
+    });
 }
