@@ -5,21 +5,11 @@ const getQueryVariable = (variable) => {
 
 // 转换链接为original
 const thumbToOriginal = (link) => {
-    const regex = /c\/250x250_80_a2\/(custom-thumb|img-master)\/img\/(\d{4})\/(\d{2})\/(\d{2})\/(\d{2})\/(\d{2})\/(\d{2})\/(\d+)_(\d+)(_square1200)?\.jpg/;
-    const match = link.match(regex);
-    if (match) {
-        const year = match[2];
-        const month = match[3];
-        const day = match[4];
-        const hour = match[5];
-        const minute = match[6];
-        const second = match[7];
-        const id = match[8];
-        const index = match[9];
-        return `https://i.pixiv.re/img-original/img/${year}/${month}/${day}/${hour}/${minute}/${second}/${id}_p${index}.jpg`;
-    } else {
-        return link;
-    }
+    const parts = link.split('/');
+    const id = parts[parts.length - 1].split('_')[0];
+    const dateParts = parts.slice(7, 13);
+    const date = dateParts.join('/');
+    return `https://i.pixiv.re/img-original/img/${date}/${id}_p0.jpg`;
 }
 
 // 限制格式
@@ -81,6 +71,8 @@ const main = () => {
             success: (data) => {
                 const originalUrl = thumbToOriginal(data.userIllusts[id].url);
                 const pageCount = data.userIllusts[id].pageCount;
+
+                console.log(originalUrl)
 
                 const newUrl = index !== null
                     ? originalUrl.replace(/_p\d+\./, `_p${index}.`)
