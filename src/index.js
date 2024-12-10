@@ -5,8 +5,21 @@ const getQueryVariable = (variable) => {
 
 // 转换链接为original
 const thumbToOriginal = (link) => {
-    return link.replace(/c\/250x250_80_a2\/img-master\/img/, 'img-original/img')
-        .replace(/_square1200\.jpg$/, '.jpg');
+    const regex = /c\/250x250_80_a2\/(custom-thumb|img-master)\/img\/(\d{4})\/(\d{2})\/(\d{2})\/(\d{2})\/(\d{2})\/(\d{2})\/(\d+)_(\d+)(_square1200)?\.jpg/;
+    const match = link.match(regex);
+    if (match) {
+        const year = match[2];
+        const month = match[3];
+        const day = match[4];
+        const hour = match[5];
+        const minute = match[6];
+        const second = match[7];
+        const id = match[8];
+        const index = match[9];
+        return `https://i.pixiv.re/img-original/img/${year}/${month}/${day}/${hour}/${minute}/${second}/${id}_p${index}.jpg`;
+    } else {
+        return link;
+    }
 }
 
 // 限制格式
