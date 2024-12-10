@@ -9,7 +9,6 @@
   <meta name="keywords" content="Pixiv 图片 反向代理 代理 开源" />
   <meta name="author" content="lrhtony" />
   <link rel="stylesheet" type="text/css" href="src/style.css" />
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.5.0/jquery.min.js"></script>
   <script src="src/index.js"></script>
   <title>Pixiv图片代理</title>
@@ -24,7 +23,7 @@
       <form autocomplete="off" class="self-center">
         <input
           class="rounded-full text-center bg-opacity-0 px-2 my-1 text-blue-600 font-extrabold md:px-10 md:text-lg lg:text-xl lg:px-8"
-          type="text" name="pid" maxlength="10" placeholder="pid..." />
+          type="text" name="pid" maxlength="15" placeholder="pid..." />
       </form>
     </div>
     <div class="bg-gray-100 rounded-xl bg-opacity-70 px-6 py-10 mt-36 mr-7 ml-7 shadow-lg md:mx-24 lg:mx-52">
@@ -33,16 +32,12 @@
       </h2>
       <p class="">
         使用上方输入框进行跳转<br />
-        因为api，暂不支持色图
-        <!-- 或者直接使用链接：<br>
-                    https://pixiv.shojo.cn/[pid]<br>
-                    https://pixiv.shojo.cn/[pid]-[序号]<br>
-                    未指定序号时默认为第一张 -->
+        格式：<br>
+        [pid]<br>
+        [pid]-[序号]<br>
+        未指定序号时默认为第一张<br>
+        测试: 34844544
       </p>
-      <!-- <h3 class="text-lg font-extrabold md:text-xl">例子：</h3>
-                <p class="">
-                    城管浮尸图<a href="https://pixiv.shojo.cn/34844544" target="_blank" rel="nofollow" class="hover:text-sky-500">https://pixiv.shojo.cn/34844544</a>
-                </p> -->
     </div>
     <div class="rounded-xl bg-gray-100 bg-opacity-70 mt-12 mx-7 shadow-lg md:mx-24 lg:mx-52">
       <p class="text-center text-gray-600 text-sm">
@@ -50,8 +45,7 @@
         <a href="https://github.com/tomingqiao/pixiv" target="_blank" rel="nofollow"
           class="hover:text-sky-500">pixiv</a>
         | api来源:
-        <a href="https://pximg.hakurei.cc/" target="_blank" rel="nofollow"
-          class="hover:text-sky-500">PIXIV图片反代</a>
+        <a href="https://pximg.hakurei.cc/" target="_blank" rel="nofollow" class="hover:text-sky-500">PIXIV图片反代</a>
       </p>
       <p class="text-center text-gray-600 text-sm">
         背景图来自
