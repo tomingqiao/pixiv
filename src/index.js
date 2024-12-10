@@ -1,107 +1,101 @@
 // 获取查询参数
-function getQueryVariable(variable) {
-    const urlParams = new URLSearchParams(window.location.search);
-    const param = urlParams.get(variable)
-    return param ? param : '';
+const getQueryVariable = (variable) => {
+    return new URLSearchParams(window.location.search).get(variable) || '';
 }
 
 // 转换链接为original
-function thumbToOriginal(link) {
+const thumbToOriginal = (link) => {
     return link.replace(/c\/250x250_80_a2\/img-master\/img/, 'img-original/img')
         .replace(/_square1200\.jpg$/, '.jpg');
 }
 
 // 限制格式
-function validateParam(str) {
+const validateParam = (str) => {
     const regex = /^(?!(?:.*--))(\d+(?:-\d+)?|$)/;
     return regex.test(str);
 }
 
 // 得到序号
-function getNumbers(str) {
-    if (str != '') {
-        const regex = /^(\d+)-(\d+)$/;
-        const match = str.match(regex);
-        return match ? {
-            pid: parseInt(match[1]),
-            num: parseInt(match[2])
-        } : null;
-    }
+const getNumbers = (str) => {
+    const regex = /^(\d+)-(\d+)$/;
+    const match = str.match(regex);
+    return match ? {
+        id: parseInt(match[1]),
+        index: parseInt(match[2])
+    } : null;
 }
 
-const param = getQueryVariable("pid");
-console.log(param);
+// 加载jpg图片,是否转为png
+const loadImage = (url) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => {
+            resolve(url);
+        };
+        img.onerror = () => {
+            reject(url);
+        };
+    });
+}
 
-if (validateParam(param)) {
-    let pid, num;
-    const numbers = getNumbers(param);
-    if (numbers) {
-        pid = numbers.pid;
-        num = numbers.num;
-    } else {
-        pid = param;
-        num = null;
+// 替换 URL
+const replaceUrl = (url) => {
+    return url.replace(/\.jpg$/, '.png');
+}
+
+// 主函数
+const main = () => {
+    const param = getQueryVariable("pid");
+    console.log(param);
+    if (param == '') {
+        return
     }
+    if (!validateParam(param)) {
+        alert("请输入正确格式");
+        return
+    }
+    const { id, index } = getNumbers(param) || { id: param, index: null };
 
-    console.log(pid);
-    console.log(num);
+    const api = 'https://pximg.hakurei.cc/ajax/illust/';
+    const url = `${api}${id}`;
 
-    if (pid) {
-        console.log(1)
-        const api = 'https://pximg.hakurei.cc/ajax/illust/';
-        const url = api + pid;
+    if (id) {
         $.ajax({
             url,
             type: "GET",
             dataType: "json",
             success: (data) => {
-                const originalUrl = thumbToOriginal(data.userIllusts[pid].url);
-                const pageCount = data.userIllusts[pid].pageCount;
-                console.log(data);
-                console.log(originalUrl);
-                console.log(pageCount);
+                const originalUrl = thumbToOriginal(data.userIllusts[id].url);
+                const pageCount = data.userIllusts[id].pageCount;
 
-                if (num !== null) {
-                    if (num <= pageCount - 1) {
-                        const newUrl = originalUrl.replace(/_p\d+\./, `_p${num}.`);
-                        console.log(newUrl);
-                        if (newUrl) {
-                            jpgOrPng(newUrl);
-                        } else {
-                            alert('url为空');
-                        }
+                const newUrl = index !== null
+                    ? originalUrl.replace(/_p\d+\./, `_p${index}.`)
+                    : originalUrl;
+
+                if (newUrl) {
+                    if (index !== null && index > pageCount - 1) {
+                        alert("无效 序号");
+                        return
                     } else {
-                        alert("序号不存在");
-                        window.location.replace(window.location.href.split('?')[0]);
+                        loadImage(newUrl)
+                            .then((url) => window.location.replace(url))
+                            .catch((url) => window.location.replace(replaceUrl(url)));
                     }
                 } else {
-                    if (originalUrl) {
-                        jpgOrPng(originalUrl);
-                    } else {
-                        alert('url为空');
-                    }
+                    alert('url为空');
+                    return
                 }
+            },
+            error: () => {
+                alert("无效 pid")
+                return
             }
         });
     }
 }
-else {
-    console.log(param)
-    alert("请输入正确格式");
-    window.location.replace(window.location.href.split('?')[0]);
-}
+
+main();
 
 
-// 监测jpg能否加载，不能加载修改为png
-function jpgOrPng(url) {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-        window.location.replace(url);
-    };
-    img.onerror = () => {
-        const newUrl = url.replace(/\.jpg$/, '.png');
-        window.location.replace(newUrl);
-    };
-}
 
